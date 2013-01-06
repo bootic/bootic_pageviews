@@ -7,7 +7,7 @@ import (
     "io/ioutil"
     "net/url"
     "fmt"
-    "http_stats/udp"
+    "bootic_pageviews/udp"
     "os"
 )
 
