@@ -20,7 +20,10 @@ func PageviewsHandler() (handle func(http.ResponseWriter, *http.Request)) {
   return func(res http.ResponseWriter, req *http.Request) {
     // Write gif response right away
     res.Header().Add("Content-Type", "image/gif")
-    res.Header().Add("Cache-Control", "no-cache")
+    res.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, private")
+    res.Header().Add("Pragma", "no-cache")
+    res.Header().Add("Expires", "Fri, 24 Nov 2000 01:00:00 GMT")
+
     res.Write(gif)
     
     // Get request data for async processing
