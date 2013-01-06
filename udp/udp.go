@@ -6,12 +6,13 @@ import (
   "fmt"
   "time"
   "encoding/json"
+  "github.com/mssola/user_agent"
 )
 
 type Event struct {
 	Type string   `json:"type"`
 	Time time.Time `json:"time"`
-	Data map[string]string `json:"data"`
+	Data map[string]interface{} `json:"data"`
 }
 
 var udpConn *net.UDPConn
@@ -26,10 +27,22 @@ func Init(hostAndPort string) {
 
 func ProcessAndSend(params map[string]string, query url.Values) {
   
-  data := make(map[string]string)
+  data := make(map[string]interface{})
   
   data["app"] = params["app_name"]
   data["account"] = params["account_name"]
+  
+  ua := new(user_agent.UserAgent)
+  ua.Parse(query["ua"][0])
+  
+  name, version := ua.Browser()
+  
+  browser := make(map[string]string)
+  browser["name"] = name
+  browser["version"] = version
+  browser["os"] = ua.OS()
+  
+  data["browser"] = browser
   
   for k, _ := range query {
     data[k] = query[k][0]
