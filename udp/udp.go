@@ -45,7 +45,9 @@ func ProcessAndSend(params map[string]string, query url.Values) {
   data["browser"] = browser
   
   for k, _ := range query {
-    data[k] = query[k][0]
+    if k != "ua" {
+      data[k] = query[k][0]
+    }
   }
   
   event := Event{
