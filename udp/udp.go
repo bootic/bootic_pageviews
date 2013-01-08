@@ -27,6 +27,12 @@ func Init(hostAndPort string) {
 
 func ProcessAndSend(params map[string]string, query url.Values) {
   
+  defer func() {
+    if err := recover(); err != nil {
+      fmt.Println("Goroutine failed:", err)
+    }
+  }()
+    
   data := make(map[string]interface{})
   
   data["app"] = params["app_name"]
