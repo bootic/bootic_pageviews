@@ -11,10 +11,10 @@ import (
     "os"
 )
 
-func PageviewsHandler() (handle func(http.ResponseWriter, *http.Request)) {
+func PageviewsHandler(gif_path string) (handle func(http.ResponseWriter, *http.Request)) {
   
   // cache the file once
-  gif, _ := ioutil.ReadFile("./tiny.gif")
+  gif, _ := ioutil.ReadFile(gif_path)
   
   // return closure with access to gif image
   return func(res http.ResponseWriter, req *http.Request) {
@@ -41,12 +41,13 @@ func main() {
   
   udp_host  := os.Getenv("DATAGRAM_IO_UDP_HOST")
 	http_host := os.Getenv("STATS_HTTP_HOST")
+	gif_path  := os.Getenv("GIF_PATH")
 	
   udp.Init(udp_host)
   
   router := mux.NewRouter()
 
-  router.HandleFunc("/r/{app_name}/{account_name}/{type}", PageviewsHandler()).Methods("GET")
+  router.HandleFunc("/r/{app_name}/{account_name}/{type}", PageviewsHandler(gif_path)).Methods("GET")
   
   http.Handle("/", router)
   fmt.Println("Starting HTTP endpoint at", http_host)
