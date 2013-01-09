@@ -3,7 +3,7 @@ package udp
 import (
   "net"
   "net/url"
-  "fmt"
+  "log"
   "time"
   "encoding/json"
   "github.com/mssola/user_agent"
@@ -29,7 +29,7 @@ func ProcessAndSend(params map[string]string, query url.Values) {
   
   defer func() {
     if err := recover(); err != nil {
-      fmt.Println("Goroutine failed:", err)
+      log.Println("Goroutine failed:", err)
     }
   }()
     
@@ -65,10 +65,8 @@ func ProcessAndSend(params map[string]string, query url.Values) {
   json, err := json.Marshal(event)
   
   if err != nil {
-    fmt.Println("Could not marshal JSON:", err)
+    log.Println("Could not marshal JSON:", err)
   }
   
   udpConn.Write(json)
-  
-  // fmt.Println("sending data" + params["app_name"] + " lalalal " + params["ua"])
 }

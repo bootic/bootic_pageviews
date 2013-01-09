@@ -6,7 +6,6 @@ import (
     "github.com/gorilla/mux"
     "io/ioutil"
     "net/url"
-    "fmt"
     "bootic_pageviews/udp"
     "os"
 )
@@ -50,6 +49,6 @@ func main() {
   router.HandleFunc("/r/{app_name}/{account_name}/{type}", PageviewsHandler(gif_path)).Methods("GET")
   
   http.Handle("/", router)
-  fmt.Println("Starting HTTP endpoint at", http_host)
+  log.Println("Starting HTTP endpoint at", http_host)
   log.Fatal(http.ListenAndServe(http_host, nil))
 }
