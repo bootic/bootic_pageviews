@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "net/http"
+    "strconv"
     "github.com/gorilla/mux"
     "io/ioutil"
     "net/url"
@@ -17,12 +18,13 @@ func PageviewsHandler(gif_path string) (handle func(http.ResponseWriter, *http.R
   
   // return closure with access to gif image
   return func(res http.ResponseWriter, req *http.Request) {
-    // Write gif response right away
     res.Header().Add("Content-Type", "image/gif")
     res.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, private, proxy-revalidate")
     res.Header().Add("Pragma", "no-cache")
     res.Header().Add("Expires", "Fri, 24 Nov 2000 01:00:00 GMT")
 
+    // Content-Length. This is not a streaming connection.
+    res.Header().Add("Content-Length", strconv.Itoa(len(gif)))
     res.Write(gif)
     
     // Get request data for async processing

@@ -26,7 +26,6 @@ func Init(hostAndPort string) {
 }
 
 func ProcessAndSend(params map[string]string, query url.Values) {
-  
   defer func() {
     if err := recover(); err != nil {
       log.Println("Goroutine failed:", err)
@@ -39,7 +38,7 @@ func ProcessAndSend(params map[string]string, query url.Values) {
   data["account"] = params["account_name"]
   
   ua := new(user_agent.UserAgent)
-  ua.Parse(query["ua"][0])
+  ua.Parse(params["ua"])
   
   name, version := ua.Browser()
   
