@@ -8,10 +8,11 @@ import (
     "io/ioutil"
     "net/url"
     "bootic_pageviews/udp"
+    "bootic_pageviews/request"
     "os"
 )
 
-func PageviewsHandler(gif_path string) (handle func(http.ResponseWriter, *http.Request)) {
+func PageviewsHandler(gif_path string, publisher *udp.Publisher) (handle func(http.ResponseWriter, *http.Request)) {
   
   // cache the file once
   gif, _ := ioutil.ReadFile(gif_path)
@@ -33,7 +34,7 @@ func PageviewsHandler(gif_path string) (handle func(http.ResponseWriter, *http.R
     params["ua"] = userAgent
     query, _ := url.ParseQuery(req.URL.RawQuery)
     // async send data to events collector
-    go udp.ProcessAndSend(params, query)
+    go request.ProcessAndSend(params, query, publisher)
   }
   
 }
@@ -44,11 +45,11 @@ func main() {
 	http_host := os.Getenv("STATS_HTTP_HOST")
 	gif_path  := os.Getenv("GIF_PATH")
 	
-  udp.Init(udp_host)
+  pub := udp.NewPublisher(udp_host)
   
   router := mux.NewRouter()
 
-  router.HandleFunc("/r/{app_name}/{account_name}/{type}", PageviewsHandler(gif_path)).Methods("GET")
+  router.HandleFunc("/r/{app_name}/{account_name}/{type}", PageviewsHandler(gif_path, pub)).Methods("GET")
   
   http.Handle("/", router)
   log.Println("Starting HTTP endpoint at", http_host)
