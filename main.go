@@ -9,7 +9,7 @@ import (
     "net/url"
     "bootic_pageviews/udp"
     "bootic_pageviews/request"
-    "os"
+    "flag"
 )
 
 func PageviewsHandler(gif_path string, publisher *udp.Publisher) (handle func(http.ResponseWriter, *http.Request)) {
@@ -41,9 +41,17 @@ func PageviewsHandler(gif_path string, publisher *udp.Publisher) (handle func(ht
 
 func main() {
   
-  udp_host  := os.Getenv("DATAGRAM_IO_UDP_HOST")
-	http_host := os.Getenv("STATS_HTTP_HOST")
-	gif_path  := os.Getenv("GIF_PATH")
+  var(
+    udp_host string
+    http_host string
+    gif_path string
+  )
+  
+  flag.StringVar(&udp_host, "udphost", "localhost:5555", "UDP host:port to send packets to")
+  flag.StringVar(&http_host, "httphost", "localhost:8080", "HTTP host:port to serve tracking gif")
+  flag.StringVar(&gif_path, "gifpath", "", "Absolute path to 1x1px tracking gif")
+  
+  flag.Parse()
 	
   pub := udp.NewPublisher(udp_host)
   
