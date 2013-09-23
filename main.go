@@ -52,11 +52,14 @@ func main() {
 	flag.StringVar(&gif_path, "gifpath", "", "Absolute path to 1x1px tracking gif")
 
 	flag.Parse()
-
+  
+  // UDP client publishes events over UDP
 	pub := udp.NewPublisher(udp_host)
-
+  
+  // HTTP router
 	router := mux.NewRouter()
-
+  
+  // Bind an HTTP request handler that publishes parsed GET requests to UDP publishers
 	router.HandleFunc("/r/{app_name}/{account_name}/{type}", PageviewsHandler(gif_path, pub)).Methods("GET")
 
 	http.Handle("/", router)
