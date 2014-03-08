@@ -1,47 +1,47 @@
 package request
 
 import (
-	"bootic_pageviews/udp"
-	"github.com/mssola/user_agent"
-	"log"
-	"net/url"
-	"time"
+  "bootic_pageviews/udp"
+  "github.com/mssola/user_agent"
+  "log"
+  "net/url"
+  "time"
 )
 
 func ProcessAndSend(params map[string]string, query url.Values, publisher *udp.Publisher) {
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println("Goroutine failed:", err)
-		}
-	}()
+  defer func() {
+    if err := recover(); err != nil {
+      log.Println("Goroutine failed:", err)
+    }
+  }()
 
-	data := make(map[string]interface{})
+  data := make(map[string]interface{})
 
-	data["app"] = params["app_name"]
-	data["account"] = params["account_name"]
+  data["app"] = params["app_name"]
+  data["account"] = params["account_name"]
 
-	ua := new(user_agent.UserAgent)
-	ua.Parse(params["ua"])
+  ua := new(user_agent.UserAgent)
+  ua.Parse(params["ua"])
 
-	name, version := ua.Browser()
+  name, version := ua.Browser()
 
-	browser := make(map[string]string)
-	browser["name"] = name
-	browser["version"] = version
-	browser["os"] = ua.OS()
+  browser := make(map[string]string)
+  browser["name"] = name
+  browser["version"] = version
+  browser["os"] = ua.OS()
 
-	data["browser"] = browser
+  data["browser"] = browser
 
-	for k, _ := range query {
-		if k != "ua" {
-			data[k] = query[k][0]
-		}
-	}
+  for k, _ := range query {
+    if k != "ua" {
+      data[k] = query[k][0]
+    }
+  }
 
-	event := make(map[string]interface{})
-	event["time"] = time.Now()
-	event["type"] = params["type"]
-	event["data"] = data
+  event := make(map[string]interface{})
+  event["time"] = time.Now()
+  event["type"] = params["type"]
+  event["data"] = data
 
-	publisher.Publish(event)
+  publisher.Publish(event)
 }
