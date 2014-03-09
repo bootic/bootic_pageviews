@@ -1,0 +1,6 @@
+## Bootic pageviews tracker
+
+Serve up 1px tracking gif. Collect pageviews, uniques and user agent data for each Bootic shop and forward data to Bootic's events hub over UDP.
+
+
+    go run main.go --udphost=bootic_tracking:5555 --httphost=localhost:8080 --gifpath=$GOPATH/src/bootic_pageviews/tiny.gif
